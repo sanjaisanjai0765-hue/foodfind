@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<title>FOODFIND – Discover restaurants, menus and special dishes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=Manrope:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header class="nav" id="top">
+  <a href="#home" class="logo"><span class="logo-mark">F</span>FOODFIND</a>
+  <button class="burger" id="burger" aria-label="Menu">☰</button>
+  <nav id="menu">
+    <a href="#home">Home</a><a href="#explore">Explore Restaurants</a><a href="#nearby">Live Nearby</a>
+    <a href="#categories">Food Categories</a><a href="#specials">Special Dishes</a><a href="#add-shop">Add Your Shop</a><a href="#about">About Us</a><a href="#contact">Contact</a>
+  </nav>
+  <select class="loc-select" aria-label="Choose location"></select>
+</header>
+
+<main>
+<section id="home" class="hero">
+  <div class="hero-emoji" aria-hidden="true"><span>🍛</span><span>🥞</span><span>🍜</span><span>🍕</span><span>🍨</span><span>🍚</span></div>
+  <div class="hero-body">
+    <h1>Discover Your Next Favourite Food.</h1>
+    <p>Find restaurants, explore delicious menus, compare prices and discover special dishes near you.</p>
+    <form class="search-bar" id="heroSearch">
+      <input id="heroQuery" type="search" placeholder="Restaurant, food or cuisine (try “biryani”)" aria-label="Search">
+      <select class="loc-select" aria-label="Location"></select>
+      <button class="btn" type="submit">Explore Restaurants</button>
+    </form>
+    <p class="note">Restaurants shown in Explore are fictional samples. Live Nearby uses real OpenStreetMap places.</p>
+  </div>
+</section>
+
+<section id="explore" class="section">
+  <h2>Explore Restaurants</h2>
+  <div class="toolbar">
+    <input id="query" type="search" placeholder="Search restaurants, dishes, cuisine..." aria-label="Search restaurants">
+    <select id="sort" aria-label="Sort">
+      <option value="near">Nearest First</option><option value="low">Price: Low to High</option>
+      <option value="high">Price: High to Low</option><option value="rating">Highest Rated</option>
+    </select>
+  </div>
+  <div class="chips" id="filters"></div>
+  <p class="count" id="count"></p>
+  <div class="grid" id="cards"></div>
+</section>
+
+<section id="nearby" class="section">
+  <h2>Live Nearby</h2>
+  <p class="muted">Real places from OpenStreetMap (names and locations only — no menus or prices).</p>
+  <div class="toolbar">
+    <button class="btn" id="locBtn">📍 Use My Location</button>
+    <div class="chips" id="radius"></div>
+  </div>
+  <p id="nearStatus" class="status" role="status"></p>
+  <div class="near-wrap">
+    <ul class="near-list" id="nearList"></ul>
+    <div id="map" aria-label="Map"></div>
+  </div>
+</section>
+
+<section id="categories" class="section">
+  <h2>Food Categories</h2>
+  <div class="cat-grid" id="catGrid"></div>
+</section>
+
+<section id="specials" class="section">
+  <h2>Restaurant Specialities</h2>
+  <div class="grid" id="specialGrid"></div>
+</section>
+
+<section id="add-shop" class="section narrow">
+  <h2>Add Your Shop</h2>
+  <p class="muted">Own a restaurant, cafe or food stall? Submit it here. We check every shop before it goes live, so please use your real details.</p>
+  <form id="shopForm" class="shop-form">
+    <input id="sName" placeholder="Shop name" required maxlength="80">
+    <select id="sCuisine" required aria-label="Cuisine"></select>
+    <input id="sAddr" placeholder="Full address" required maxlength="200">
+    <div class="two"><input id="sLat" placeholder="Latitude" required inputmode="decimal"><input id="sLng" placeholder="Longitude" required inputmode="decimal"></div>
+    <button type="button" class="btn ghost" id="sGps">📍 Use my current location (stand inside your shop)</button>
+    <div class="two"><input id="sPhone" placeholder="Phone (optional, shown publicly)" maxlength="15"><input id="sHours" placeholder="Opening hours (optional)" maxlength="60"></div>
+    <input id="sEmail" type="email" placeholder="Your email (private, used only for verification)" required maxlength="120">
+    <input id="sWebsite" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+    <h3>Menu</h3>
+    <div id="menuRows"></div>
+    <button type="button" class="btn ghost" id="addDish">+ Add dish</button>
+    <button class="btn" type="submit">Submit for verification</button>
+    <p id="sDone" class="status" role="status"></p>
+  </form>
+</section>
+
+<section id="about" class="section narrow">
+  <h2>About Us</h2>
+  <p>FOODFIND helps you decide where to eat: compare distance, price and food type, and see each restaurant's signature dish before you leave home. We are a discovery site, not a delivery service, so there is no cart or checkout.</p>
+  <p class="muted">This is a prototype. Restaurant, menu, price and rating data is sample data until a real source is connected.</p>
+</section>
+
+<section id="contact" class="section narrow">
+  <h2>Contact</h2>
+  <form id="contactForm" class="contact">
+    <input id="cName" placeholder="Your name" required>
+    <input id="cMail" type="email" placeholder="Email" required>
+    <textarea id="cMsg" rows="4" placeholder="How can we help?" required></textarea>
+    <button class="btn" type="submit">Send message</button>
+    <p id="cDone" class="status"></p>
+  </form>
+</section>
+</main>
+
+<footer>© FOODFIND prototype · Map data © OpenStreetMap contributors</footer>
+
+<div class="modal" id="modal" hidden>
+  <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="mTitle">
+    <button class="close" id="mClose" aria-label="Close">✕</button>
+    <div id="mBody"></div>
+  </div>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="js/data.js"></script>
+<script src="js/map.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
